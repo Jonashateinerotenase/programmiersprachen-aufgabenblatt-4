@@ -21,14 +21,38 @@ struct ListNode
 	ListNode * m_prev ;
 	ListNode * m_next ;
 };
+	
+	template <typename T>
+	struct ListIterator
+	{
+	typedef ListIterator<T> Self;
 
-template <typename T>
-struct ListIterator
-{
+	typedef T value_type;
+	typedef T* pointer;
+	typedef T& reference;
+	typedef ptrdiff_t difference_type ;
+	typedef std::forward_iterator_tag iterator_category;
+
 	friend class List <T>;
-// not implemented yet
+
+	ListIterator() {} // not implemented yet
+	ListIterator (ListNode <T>* n) {} // not implemented yet
+	reference operator*() const {} // not implemented yet
+	pointer operator->() const {} // not implemented yet
+	Self& operator++() {} // not implemented yet
+	Self operator++(int) {} // not implemented yet
+	bool operator==(const Self& x) const {} // not implemented yet
+	bool operator!=(const Self& x) const {} // not implemented yet
+Self next () const
+{
+	if (m_node)
+		return ListIterator (m_node -> m_next);
+	else
+		return ListIterator (nullptr);
+}
 private:
-	ListNode <T>* m_node = nullptr;
+// The Node the iterator is pointing to
+ListNode<T>* m_node = nullptr;
 };
 
 template <typename T>
@@ -72,12 +96,77 @@ public:
 	T& front() {
 		return m_first->m_value;
 	}
-	void push_front(T const& x){
-		if (m_size==0)m_first = new ListNode<T>{x, nullptr, nullptr};
-		else if(m_size>1){
-			m_first = new ListNode<T>{x, nullptr, m_first};
-		}
+	T& back() {
+		return m_last->m_value;
 	}
+	T const& back() const {
+		return m_last->m_value;
+	}
+	void push_front(T const& x){
+		if (m_size==0){
+			m_first = new ListNode<T>{x, nullptr, nullptr};
+			m_last=m_first;
+		}
+		else if(m_size>=1){
+			m_first = new ListNode<T>{x, nullptr, m_first};
+			m_first->m_next->m_prev=m_first;
+		}
+		++m_size;
+	}
+	void push_back(T const& x){
+		if (m_size==0)
+		{
+			m_last = new ListNode<T>{x, nullptr, nullptr};
+			m_first=m_last;
+		}
+		else if(m_size>=1){
+			m_last = new ListNode<T>{x, m_last, nullptr};
+			m_last->m_prev->m_next=m_last;
+		}
+		++m_size;
+	}
+	void pop_front(){
+		if (m_size==0){
+
+			}
+		else if(m_size>=1){
+			assert(m_first != nullptr);
+			delete m_first;
+			m_first = m_first->m_next;
+			--m_size;
+		}
+
+	}
+	void pop_back(){
+		if (m_size==0){
+
+			}
+		else if(m_size>=1){
+			assert(m_last != nullptr);
+			delete m_last;
+			m_last = m_last->m_prev;
+			--m_size;
+		}
+
+	}
+	void clear(){
+		if(m_size > 0){
+			/*
+			unsigned int range = m_size;
+			for (unsigned int i = 0; i <= range; ++i)
+			{
+				pop_front();
+			}
+			*/
+			while(m_size != 0)
+			{
+				pop_front();
+			}
+
+		}
+
+	}
+
 private:
 	std::size_t m_size = 0;
 	ListNode<T>* m_first = nullptr;
