@@ -35,15 +35,28 @@ struct ListNode
 
 	friend class List <T>;
 
-	ListIterator() {} // not implemented yet
-	ListIterator (ListNode <T>* n) {} // not implemented yet
-	reference operator*() const {} // not implemented yet
-	pointer operator->() const {} // not implemented yet
-	Self& operator++() {} // not implemented yet
-	Self operator++(int) {} // not implemented yet
-	bool operator==(const Self& x) const {} // not implemented yet
-	bool operator!=(const Self& x) const {} // not implemented yet
-Self next () const
+	ListIterator():
+	m_node{nullptr}
+	 {}
+	ListIterator (ListNode <T>* n):
+	m_node{n}
+	{} 
+	reference operator*() const {
+		return m_node->m_value;
+	} 
+	pointer operator->() const {
+		return &(m_node->m_value);
+	} // not implemented jet
+	Self& operator++() {
+		return m_node->m_next;
+	} // not implemented jet -- jet koennte allerdings nich ganz starten!!
+	Self operator++(int) {
+			ListIterator cooleriterator(*this);
+			return *this;
+	} // not implemented jet
+	bool operator==(const Self& x) const {} // not implemented jet
+	bool operator!=(const Self& x) const {} // not implemented jet
+Self next() const
 {
 	if (m_node)
 		return ListIterator (m_node -> m_next);
