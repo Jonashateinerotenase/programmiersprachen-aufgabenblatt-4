@@ -54,8 +54,20 @@ struct ListNode
 			ListIterator cooleriterator(*this);
 			return *this;
 	} // not implemented jet
-	bool operator==(const Self& x) const {} // not implemented jet
-	bool operator!=(const Self& x) const {} // not implemented jet
+	bool operator==(const Self& x) const {
+		if (x.m_node==m_node)
+		{
+			return true;
+		}
+		else return false;
+	} // not implemented jet
+	bool operator!=(const Self& x) const {
+		if (x.m_node!=m_node)
+		{
+			return true;
+		}
+		else return false;
+	} // not implemented jet
 Self next() const
 {
 	if (m_node)
@@ -114,6 +126,27 @@ public:
 	}
 	T const& back() const {
 		return m_last->m_value;
+	}
+	ListIterator<T> end(){
+		if(empty())
+		{
+			return nullptr; 									
+		}
+		else if (m_last->m_next == nullptr) 
+		{ 		
+			ListNode<T>* node = new ListNode<T> ();
+			node->m_prev = m_last; 							
+			m_last->m_next = node; 					
+			return node;
+		} 
+		else 
+		{
+			return m_last->m_next;										
+		}
+	}
+	ListIterator<T> begin(){
+		ListIterator <T> anfang(m_first);
+		return anfang;
 	}
 	void push_front(T const& x){
 		if (m_size==0){
@@ -179,6 +212,7 @@ public:
 		}
 
 	}
+
 
 private:
 	std::size_t m_size = 0;
