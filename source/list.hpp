@@ -36,7 +36,7 @@ struct ListNode
 	friend class List <T>;
 
 	ListIterator():
-	m_node{nullptr}
+		m_node{nullptr}
 	 {}
 	ListIterator (ListNode <T>* n):
 	m_node{n}
@@ -47,13 +47,28 @@ struct ListNode
 	pointer operator->() const {
 		return &(m_node->m_value);
 	} // not implemented jet
-	Self& operator++() {
-		return m_node->m_next;
-	} // not implemented jet -- jet koennte allerdings nich ganz starten!!
-	Self operator++(int) {
-			ListIterator cooleriterator(*this);
-			return *this;
+	Self& operator++() //++i
+	{
+		m_node = m_node -> m_next;
+		return *this;
+	} 
+	Self operator++(int) //i++
+	{
+		ListIterator tmp(*this);
+
+		m_node = m_node -> m_next;
+		
+		return tmp;
 	} // not implemented jet
+	/*Self operator++(int x)
+	{
+			while(x!=0){
+				*this=next();
+				--x;
+			}
+			return *this;
+	} // not implemented jet*/
+
 	bool operator==(const Self& x) const {
 		if (x.m_node==m_node)
 		{
@@ -90,6 +105,48 @@ private:
 	ListNode <T>* m_node = nullptr;
 };
 
+
+template <typename T>
+bool operator==(List<T> const& xs, List<T> const& ys) //in const fkt alle benutzten fkt const
+{
+	if(xs.size() != ys.size())return false;
+	else
+	{
+		ListIterator<T> jumperx = xs.begin();
+		ListIterator<T> jumpery = ys.begin();
+	 	for(unsigned int i = 0; i < xs.size(); ++i)
+	 	{
+	 		if(*jumperx != *jumpery)
+	 		{
+	 			return false;
+	 		}
+	 		jumperx++;
+	 		jumpery++;
+	 	}
+	 	/*
+	 	while(jumperx!=xs.end())
+	 	{
+			if(*jumperx != *jumpery)
+			{
+				return false;
+			}
+		jumperx++;
+		jumpery++;
+
+		std::cout << "HALLO MAMA" << std::endl;
+		}
+		*/
+	}
+	return true;
+}
+
+
+template <typename T>
+bool operator!=(List<T> const& xs, List<T> const& ys)
+{
+	return !(xs==ys);
+}
+
 template <typename T>
 class List
 {
@@ -109,6 +166,20 @@ public:
 		m_first{nullptr},
 		m_last{nullptr}
 	{}
+
+	List(List<T> const& list2): 
+		m_size{0},
+		m_first{nullptr},
+		m_last{nullptr}
+	{
+
+		for(auto const& x : list2){
+			push_back(x);
+		}
+	}
+	
+	~List() { clear(); }
+
 	bool empty() const {
 		return m_size == 0;
 	}
@@ -127,92 +198,79 @@ public:
 	T const& back() const {
 		return m_last->m_value;
 	}
-	ListIterator<T> end(){
-		if(empty())
-		{
-			return nullptr; 									
-		}
-		else if (m_last->m_next == nullptr) 
-		{ 		
-			ListNode<T>* node = new ListNode<T> ();
-			node->m_prev = m_last; 							
-			m_last->m_next = node; 					
-			return node;
-		} 
-		else 
-		{
-			return m_last->m_next;										
-		}
+
+	ListIterator<T> end() const
+	{
+		return ListIterator<T>();
 	}
-	ListIterator<T> begin(){
-		ListIterator <T> anfang(m_first);
-		return anfang;
+	ListIterator<T> begin() const
+	{
+		return ListIterator<T>(m_first);
 	}
 	void push_front(T const& x){
+		m_first = new ListNode<T>{x, nullptr, m_first};
 		if (m_size==0){
-			m_first = new ListNode<T>{x, nullptr, nullptr};
+			
 			m_last=m_first;
 		}
 		else if(m_size>=1){
-			m_first = new ListNode<T>{x, nullptr, m_first};
 			m_first->m_next->m_prev=m_first;
 		}
 		++m_size;
 	}
 	void push_back(T const& x){
+		m_last = new ListNode<T>{x, m_last, nullptr};
 		if (m_size==0)
 		{
-			m_last = new ListNode<T>{x, nullptr, nullptr};
 			m_first=m_last;
 		}
 		else if(m_size>=1){
-			m_last = new ListNode<T>{x, m_last, nullptr};
 			m_last->m_prev->m_next=m_last;
 		}
 		++m_size;
 	}
 	void pop_front(){
 		if (m_size==0){
-
-			}
-		else if(m_size>=1){
+		} else if (m_size == 1)	{
+            delete m_first;
+            m_first = nullptr;
+            m_last = nullptr;
+            m_size = 0;
+		}
+		else if(m_size>1){
 			assert(m_first != nullptr);
-			delete m_first;
+			auto n = m_first;
 			m_first = m_first->m_next;
+			delete n;
 			--m_size;
 		}
 
 	}
 	void pop_back(){
 		if (m_size==0){
-
-			}
-		else if(m_size>=1){
-			assert(m_last != nullptr);
+		}else if (m_size == 1){
 			delete m_last;
+			m_first = nullptr;
+			m_last = nullptr;
+			m_size = 0;
+		}
+		else if(m_size>1){
+			assert(m_last != nullptr);
+			auto n = m_last;
 			m_last = m_last->m_prev;
+			delete n;
 			--m_size;
 		}
 
 	}
 	void clear(){
-		if(m_size > 0){
-			/*
-			unsigned int range = m_size;
-			for (unsigned int i = 0; i <= range; ++i)
-			{
-				pop_front();
-			}
-			*/
-			while(m_size != 0)
-			{
-				pop_front();
-			}
-
-		}
-
+		while(!empty())
+			pop_front();
 	}
+	/*void reverse(List<T> x){
+		List<T> y;
 
+	}*/
 
 private:
 	std::size_t m_size = 0;
