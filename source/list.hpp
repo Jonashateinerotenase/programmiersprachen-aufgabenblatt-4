@@ -267,10 +267,16 @@ public:
 		while(!empty())
 			pop_front();
 	}
-	/*void reverse(List<T> x){
-		List<T> y;
+	/*void insert(){
 
 	}*/
+	void reverse(){
+		List<T> y{*this};
+		clear();
+		for(ListIterator<T> q = y.begin(); q!=y.end();++q){
+			push_front(*q);
+		}
+	}
 
 private:
 	std::size_t m_size = 0;
