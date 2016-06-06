@@ -90,6 +90,13 @@ Self next() const
 	else
 		return ListIterator (nullptr);
 }
+Self prev() const
+{
+	if (m_node)
+		return ListIterator (m_node -> m_prev);
+	else
+		return ListIterator (nullptr);
+}
 private:
 // The Node the iterator is pointing to
 ListNode<T>* m_node = nullptr;

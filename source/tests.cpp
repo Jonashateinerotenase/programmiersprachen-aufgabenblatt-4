@@ -127,13 +127,15 @@ TEST_CASE("movetest","[constructor]"){
 	REQUIRE(4 == list2.size());
 }
 
-/*TEST_CASE("movetest","[constructor]"){
+TEST_CASE("insert test","[constructor]"){
 
 	List<int> list;
 	int a = 77;
-	list.insert(a,list.begin());
+	ListIterator<int> b = list.begin();
+	list.insert(a,b);
 	REQUIRE(77== list.front());
-}*/
+}
+
 
 
 
