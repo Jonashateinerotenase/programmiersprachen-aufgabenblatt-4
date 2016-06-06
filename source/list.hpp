@@ -177,6 +177,18 @@ public:
 			push_back(x);
 		}
 	}
+
+	List(List&& listmove):
+		m_size{listmove.m_size},
+		m_first{listmove.m_first},
+		m_last{listmove.m_last}
+	{
+		listmove.m_size=0;
+		listmove.m_first=nullptr;
+		listmove.m_last=nullptr;
+
+	}
+
 	
 	~List() { clear(); }
 
@@ -275,6 +287,26 @@ public:
 		clear();
 		for(ListIterator<T> q = y.begin(); q!=y.end();++q){
 			push_front(*q);
+		}
+	}
+
+	void insert(T const& wert, iterator& position)
+	{
+		if (position==begin())
+		{
+			push_front(wert);
+		}
+		else if(position==end())
+		{
+			push_back(wert);
+		}
+		else 
+		{
+			ListNode <T>* newnode= new ListNode<T>{wert, position.prev().m_node, position.m_node};
+
+			position.prev().m_node->m_next = newnode;
+			position.m_node->m_prev = newnode;
+			m_size++;//wird bei pushen selbstgemacht
 		}
 	}
 

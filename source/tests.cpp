@@ -114,6 +114,28 @@ list2.push_front(1);
 REQUIRE(list==list2);
 }
 
+TEST_CASE("movetest","[constructor]"){
+
+	List<int> list;
+	list.push_front(1);
+	list.push_front(2);
+	list.push_front(3);
+	list.push_front(4);
+	List<int> list2(std::move(list));
+	REQUIRE( 0 == list.size());
+	REQUIRE(list.empty());
+	REQUIRE(4 == list2.size());
+}
+
+/*TEST_CASE("movetest","[constructor]"){
+
+	List<int> list;
+	int a = 77;
+	list.insert(a,list.begin());
+	REQUIRE(77== list.front());
+}*/
+
+
 
 int main(int argc, char *argv[])
 {
